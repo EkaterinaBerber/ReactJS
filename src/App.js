@@ -9,7 +9,8 @@ class App extends Component {
       {name: "Kate", age: "27"},
       {name: "Den", age: "28"},
       {name: "Max", age: "28"}
-    ]
+    ],
+    showUsers: false
   };
 
   switchNameHandler = (newName) => {
@@ -33,6 +34,18 @@ class App extends Component {
     );
   };
 
+  hideButtonHandler = () => {
+    const usersEnabled = this.state.showUsers;
+    this.setState({showUsers: !usersEnabled});
+  }
+
+  deleteUserHandler = (userIndex) => {
+    // const newPersons = this.state.persons.slice();
+    const newPersons = [...this.state.persons];
+    newPersons.splice(userIndex, 1);
+    this.setState({persons: newPersons});
+  }
+
   render() {
 
     const style = {
@@ -43,22 +56,26 @@ class App extends Component {
       cursor: 'pointer'
     };
 
+    let persons = null;
+
+    if(this.state.showUsers) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return <Person 
+                    click={() => this.deleteUserHandler(index)}
+                    name={person.name} 
+                    age={person.age}/>
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
         <h1>Hi! I'm a React App!</h1>
-        <button onClick={this.switchNameHandler.bind(this, "Alex")} style={style}>Switch name</button>
-        <Person 
-        name={this.state.persons[0].name} 
-        age={this.state.persons[0].age} 
-        click={this.switchNameHandler.bind(this, "ALEX")} />
-        <Person 
-        name={this.state.persons[1].name} 
-        age={this.state.persons[1].age} >
-        My hobby is: beer!</Person>
-        <Person 
-        name={this.state.persons[2].name} 
-        age={this.state.persons[2].age} 
-        change={this.inputNameHandler}/>
+        <button onClick={this.hideButtonHandler} style={style}>Show Users</button>
+        {persons}
       </div>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Hi! I\'m a React App!'));
